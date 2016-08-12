@@ -34,27 +34,42 @@ int main(int argc, char** argv) {
         in[i]=toupper(in[i]);
     }
 
-    int digit = search(in, thousands, 3);
-    if (digit){
-        cout << digit << "000";
+    //search for digits
+    int total = 0;
+    int digit; 
+    if (digit = search(in, thousands, 3)){
+        //cout << digit << "000";
+        total += digit*1000;
     }
-    else if(digit = search(in, hundreds, 10)){
-        cout << digit << "00";
+    if(digit = search(in, hundreds, 9)){
+        //cout << digit << "00";
+        total += digit*100;
     }
-    else if(digit = search(in, tens, 10)){
-        cout << digit << "0";
+    if(digit = search(in, tens, 9)){
+        //cout << digit << "0";
+        total += digit*10;
     }
-    else if(digit = search(in, units, 10)){
-        cout << digit;
+    if(digit = search(in, units, 9)){
+        //cout << digit;
+        total += digit;
     }
     
-    cout << endl;
+    //if total is 0, then maybe Arabic numbers are present
+    if (total != 0){
+        cout << total << endl;
+    }
     return 0;
 }
 
 int search(string in, string sArr[], int length){
-    for (int i = 0; i < length; i++){
-        if (in == sArr[i]){
+    for (int i = length-1; i >= 0; i--){
+        //find a digit
+        size_t index = in.find(sArr[i]);
+        if(index != string::npos){
+            
+            //remove the portion that is found
+            in.erase(index, sArr[i].size());
+        
             return i+1;
         }
     }
