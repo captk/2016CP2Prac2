@@ -140,9 +140,39 @@ string romanToArabic(string in) {
 
 string arabicToRoman(string in) {
     //search for digits
-    //if string is non-empty, remember to concatenate a zero
-    stringstream total;
-    int digit;
+    //using stringstream to grab digits
+    //not very elegant... oh well
+    stringstream romanNumber, inStream, arabicNumber;
+    int temp, remainder;
+    inStream << in;
 
-    return "0000";
+    //get all the numbers and put them together
+    //we should now have an int
+    while (inStream >> temp) {
+        arabicNumber << temp;
+    }
+
+    //remainder is now an integer
+    arabicNumber >> remainder;
+    temp = remainder / 1000;
+
+    for (int i = 0; i < temp; i++) {
+        romanNumber << "M";
+    }
+
+    remainder %= 1000;
+    temp = remainder / 100;
+    if (temp != 0) {
+        romanNumber << hundreds[temp - 1];
+    }
+    remainder %= 100;
+    temp = remainder / 10;
+    if (temp != 0) {
+        romanNumber << tens[temp - 1];
+    }
+    remainder %= 10;
+    if (remainder != 0) {
+        romanNumber << units[remainder - 1];
+    }
+    return romanNumber.str();
 }
