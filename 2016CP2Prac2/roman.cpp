@@ -19,7 +19,11 @@
 using namespace std;
 //Function that returns a digit depending on input array
 //returns -1 if not found.
-int search(string in, string sArr[], int length);
+int search(string &in, string sArr[], int length);
+
+//Function to check if the next character is appropriate
+//deletes the rest of the string otherwise
+bool appropriate(string &in);
 
 //converter functions
 //returns converted string
@@ -76,11 +80,11 @@ int main(int argc, char** argv) {
 //Looks for string 'in' inside of sArr[]
 //returns index of array + 1
 
-int search(string in, string sArr[], int length) {
+int search(string &in, string sArr[], int length) {
     for (int i = length - 1; i >= 0; i--) {
         //find a digit
         size_t index = in.find(sArr[i]);
-        if (index != string::npos) {
+        if (index != string::npos && index == 0) {
 
             //Need to look for one more in case it's the 4th element
             if (i == 4) {
@@ -90,50 +94,68 @@ int search(string in, string sArr[], int length) {
                 }
             }
             //remove the portion that is found
+            //cout << "erasing index: " << index << " size: " << sArr[i].size() << endl;
             in.erase(index, sArr[i].size());
 
             return i + 1;
         }
     }
+
     return 0;
 }
 
+bool appropriate(string &in) {
+    //cout << "checking appropriatness for: " << in << endl;
+    switch (in[0]) {
+        case 'M':
+        case 'D':
+        case 'C':
+        case 'L':
+        case 'X':
+        case 'V':
+        case 'I':
+            return true;
+            break;
+        default:
+            in.erase(0, in.size());
+            //cout << "new string: " << in << endl;
+            return false;
+
+    }
+}
 //Converts a roman numeral string and returns an equivalent arabic string
 
 string romanToArabic(string in) {
 
     //search for digits
     //if string is non-empty, remember to concatenate a zero
-    stringstream total;
+    int total = 0;
+    stringstream totalString;
     int digit;
-
-    if (digit = search(in, thousands, 3)) {
-        //cout << digit << "000";
-        total << digit;
+    if (appropriate(in) && (digit = search(in, thousands, 3))) {
+        //cout << digit << "000" << endl;
+        total += 1000 * digit;
+    }
+    if (appropriate(in) && (digit = search(in, hundreds, 9))) {
+        //cout << digit << "00" << endl;
+        total += digit * 100;
+    }
+    if (appropriate(in) && (digit = search(in, tens, 9))) {
+        //cout << digit << "0" << endl;
+        total += digit * 10;
     }
 
-    if (digit = search(in, hundreds, 9)) {
-        //cout << digit << "00";
-        total << digit;
-    } else if (total.str().length() > 0) {
-        total << digit;
+
+    if (appropriate(in) && (digit = search(in, units, 9))) {
+        //cout << digit << endl;
+        total += digit;
     }
 
-    if (digit = search(in, tens, 9)) {
-        //cout << digit << "0";
-        total << digit;
-    } else if (total.str().length() > 0) {
-        total << digit;
-    }
 
-    if (digit = search(in, units, 9)) {
-        //cout << digit;
-        total << digit;
-    } else if (total.str().length() > 0) {
-        total << digit;
-    }
 
-    return total.str();
+    //cout << total << endl;
+    totalString << total;
+    return totalString.str();
 }
 
 //Converts an arabic numeral string and returns an equivalent roman string
